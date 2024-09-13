@@ -1,0 +1,32 @@
+import React, { useState } from 'react';
+
+interface Props {
+  fileUrl: string;
+  fileName: string;
+}
+
+const DownloadButton: React.FC<Props> = ({ fileUrl, fileName }) => {
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
+  const handleDownload = () => {
+    setIsDownloading(true);
+    
+    // 模拟下载过程
+    setTimeout(() => {
+      setIsDownloading(false);
+      // 创建下载链接
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileName;
+      link.click();
+    }, 1000); // 模拟下载时间
+  };
+
+  return (
+    <button onClick={handleDownload} disabled={isDownloading}>
+      {isDownloading ? 'Downloading...' : 'Download'}
+    </button>
+  );
+};
+
+export default DownloadButton;
