@@ -1,0 +1,59 @@
+import pandas as pd
+
+# 加载数据集
+df = pd.read_csv('path/to/finance-tasks_headline.csv')
+
+import json
+import pandas as pd
+
+def process_entry(entry, unique_id):
+    questions_and_answers = entry.split('\n')  # 假设每个问题和答案在新行
+    formatted_data = []
+    
+    for qa in questions_and_answers:
+        if not qa.strip():
+            continue
+        question, answer = qa.split('? ', 1)
+        question = question.strip() + '?'
+        answer = answer.strip()
+        
+        formatted_data.append({
+            "id": unique_id,
+            "Question": question,
+            "Answer": answer
+        })
+        
+    return formatted_data
+
+def reformat_dataset(input_file, output_file):
+    df = pd.read_csv(input_file)
+    all_data = []
+    unique_id = 1
+    
+    for index, row in df.iterrows():
+        entry = row['input_column_name']  # 替换为实际的列名
+        formatted_data = process_entry(entry, unique_id)
+        all_data.extend(formatted_data)
+        unique_id += len(formatted_data)
+    
+    # 写入 JSON 文件
+    with open(output_file, 'w') as f:
+        json.dump(all_data, f, indent=2)
+
+# 执行数据重格式化
+reformat_dataset('path/to/finance-tasks_headline.csv', 'formatted_data.json')
+import json
+
+with open('formatted_data.json', 'r') as f:
+    data = json.load(f)
+    total_pairs = len(data)
+    print(f"Total number of question-answer pairs: {total_pairs}")
+import time
+
+start_time = time.time()
+
+# 执行数据重格式化
+reformat_dataset('path/to/finance-tasks_headline.csv', 'formatted_data.json')
+
+end_time = time.time()
+print(f"Time taken for the process: {end_time - start_time} seconds")
